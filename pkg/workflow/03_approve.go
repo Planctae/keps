@@ -6,7 +6,7 @@ import (
 	"github.com/calebamiles/keps/pkg/settings"
 )
 
-// Approve allows an approver to signal that a KEP is
+// Approve allows a SIG to signal that a KEP is
 // approved for implementation. The KEP is checked for
 // consistency before the state is updated, which can
 // return an error

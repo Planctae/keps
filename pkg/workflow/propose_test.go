@@ -1,21 +1,11 @@
 package workflow_test
 
 import (
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-
-	"github.com/calebamiles/keps/pkg/keps"
-	"github.com/calebamiles/keps/pkg/keps/states"
-	"github.com/calebamiles/keps/pkg/settings/settingsfakes"
-
-	"github.com/calebamiles/keps/pkg/workflow"
+	_ "github.com/onsi/gomega"
 )
 
-var _ = Describe("Propose", func() {
+var _ = Describe("Proposing a KEP", func() {
 	const (
 		authorOne         = "handleOne"
 		title             = "A Great but Complicated Idea"
@@ -23,40 +13,19 @@ var _ = Describe("Propose", func() {
 		metadataFilename  = "metadata.yaml"
 	)
 
-	It("prepares the KEP for acceptance|deferment|rejection", func() {
-		tmpDir, err := ioutil.TempDir("", "kep-propose")
-		Expect(err).ToNot(HaveOccurred())
-		defer os.RemoveAll(tmpDir)
+	Context("with a valid KEP", func() {
+		It("proposes a KEP and returns a link to the GitHub Pull Request", func() {
+			By("reading in the runtime settings")
 
-		contentRoot := filepath.Join(tmpDir, "content")
+			By("returning the URL that a human would care about")
+		})
+	})
 
-		err = createSIGDirsAt(contentRoot)
-		Expect(err).ToNot(HaveOccurred(), "creating SIG directories")
+	Context("when the KEP has already been proposed", func() {
+		It("returns an existing link to the GitHub Pull Request", func() {
+			By("reading in the runtime settings")
 
-		kepDirName := "value-delivered-over-multiple-releases"
-		targetDir := kepDirName
-
-		runtimeSettings := &settingsfakes.FakeRuntime{}
-		runtimeSettings.PrincipalReturns(authorOne)
-		runtimeSettings.TargetDirReturns(targetDir)
-		runtimeSettings.ContentRootReturns(contentRoot)
-
-		targetDir, err = workflow.Init(runtimeSettings)
-		Expect(err).ToNot(HaveOccurred(), "simulating `kep init`")
-
-		// simulate targeting the newly created KEP
-		runtimeSettings.TargetDirReturns(targetDir)
-
-		By("updating the KEP state and persisting the KEP")
-		err = workflow.Propose(runtimeSettings)
-		Expect(err).ToNot(HaveOccurred())
-
-		By("marking the KEP as provisional")
-		kep, err := keps.Open(targetDir)
-		Expect(err).ToNot(HaveOccurred(), "opening KEP after propose")
-
-		Expect(kep.State()).To(Equal(states.Provisional))
-
-		// check that has matching state and last updated
+			By("returning the URL that a human would care about")
+		})
 	})
 })
